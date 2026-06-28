@@ -610,8 +610,7 @@
                 </p>
                 <h3>ตัวอย่าง — ระบบฐานสิบ (Decimal)</h3>
                 <p class="muted">
-                    แทนปริมาณที่แตกต่างกันด้วยสัญลักษณ์เลขอารบิก 0–9 ลอง hover
-                    ดูว่าแต่ละสัญลักษณ์แทน "ดาว" กี่ตัว
+                    แทนปริมาณที่แตกต่างกันด้วยสัญลักษณ์เลขอารบิก 0–9
                 </p>
                 <div class="symrow" id="symrow"></div>
             </section>
@@ -645,29 +644,34 @@
                             <td>8</td>
                             <td>Octal</td>
                             <td>8</td>
-                            <td class="mono">0–7</td>
+                            <td class="mono">0, 1, 2, 3, 4, 5, 6, 7</td>
                             <td>ระบบอินโทรปาร์ต</td>
                         </tr>
                         <tr>
                             <td>10</td>
                             <td>Decimal</td>
                             <td>10</td>
-                            <td class="mono">0–9</td>
+                            <td class="mono">0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td>
                             <td>ใช้ทั่วไป</td>
                         </tr>
                         <tr>
                             <td>16</td>
                             <td>Hexadecimal</td>
                             <td>16</td>
-                            <td class="mono">0–9, A–F</td>
-                            <td>คอมพิวเตอร์ (มีแอพพลิเคชั่น)</td>
+                            <td class="mono">
+                                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F
+                            </td>
+                            <td>โค้ดสี</td>
                         </tr>
                         <tr>
                             <td>60</td>
                             <td>Sexagesimal</td>
                             <td>60</td>
                             <td>สัญลักษณ์ Babylonian</td>
-                            <td>การค้าขาย (แบ่งย่อยได้เยอะสุด)</td>
+                            <td>
+                                การค้าขาย (แบ่งย่อยได้เยอะสุด), ระบบเวลา
+                                ชั่วโมง-นาที-วินาที
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -810,11 +814,12 @@
                         />
                         <button class="zbtn fsbig" data-step="-1">−1</button>
                         <button class="zbtn fsbig" data-step="-10">−10</button>
-                        <button class="zbtn fsbig" data-step="-100">−100</button>
+                        <button class="zbtn fsbig" data-step="-100">
+                            −100
+                        </button>
                     </div>
                 </div>
             </section>
-
         </main>
 
         <footer>
