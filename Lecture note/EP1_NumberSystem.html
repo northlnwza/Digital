@@ -1,0 +1,1316 @@
+<!doctype html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>EP1 — Number System (ระบบเลขฐาน)</title>
+        <style>
+            :root {
+                --bg: #0e1117;
+                --panel: #161b22;
+                --panel2: #1c2430;
+                --line: #2b333f;
+                --txt: #e6edf3;
+                --muted: #9aa7b4;
+                --accent: #58a6ff;
+                --accent2: #3fb950;
+                --warn: #d29922;
+                --pink: #f778ba;
+                --radius: 14px;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                margin: 0;
+                background: linear-gradient(180deg, #0b0e13, #0e1117);
+                color: var(--txt);
+                font-family:
+                    "Segoe UI", "Sarabun", "Noto Sans Thai", system-ui,
+                    sans-serif;
+                line-height: 1.7;
+            }
+            header {
+                padding: 48px 24px 36px;
+                text-align: center;
+                background: radial-gradient(
+                    1200px 400px at 50% -120px,
+                    rgba(88, 166, 255, 0.18),
+                    transparent
+                );
+                border-bottom: 1px solid var(--line);
+            }
+            header h1 {
+                margin: 0;
+                font-size: 2.4rem;
+                letter-spacing: 0.5px;
+            }
+            header .sub {
+                color: var(--muted);
+                margin-top: 8px;
+            }
+            .badge {
+                display: inline-block;
+                margin-top: 14px;
+                padding: 4px 14px;
+                border: 1px solid var(--accent);
+                border-radius: 999px;
+                color: var(--accent);
+                font-size: 0.85rem;
+            }
+            nav {
+                position: sticky;
+                top: 0;
+                z-index: 20;
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 12px;
+                background: rgba(14, 17, 23, 0.85);
+                backdrop-filter: blur(8px);
+                border-bottom: 1px solid var(--line);
+            }
+            nav a {
+                color: var(--muted);
+                text-decoration: none;
+                font-size: 0.9rem;
+                padding: 6px 12px;
+                border-radius: 8px;
+            }
+            nav a:hover {
+                color: var(--txt);
+                background: var(--panel2);
+            }
+            main {
+                max-width: 920px;
+                margin: 0 auto;
+                padding: 32px 20px 80px;
+            }
+            section {
+                background: var(--panel);
+                border: 1px solid var(--line);
+                border-radius: var(--radius);
+                padding: 24px 26px;
+                margin-bottom: 28px;
+            }
+            h2 {
+                margin-top: 0;
+                font-size: 1.55rem;
+                border-left: 4px solid var(--accent);
+                padding-left: 12px;
+            }
+            h3 {
+                color: var(--accent);
+                font-size: 1.15rem;
+                margin-bottom: 6px;
+            }
+            p {
+                margin: 0.5em 0;
+            }
+            .muted {
+                color: var(--muted);
+            }
+            .note {
+                background: var(--panel2);
+                border-left: 4px solid var(--warn);
+                padding: 12px 16px;
+                border-radius: 8px;
+                margin: 14px 0;
+            }
+            .note b {
+                color: var(--warn);
+            }
+            code,
+            .mono {
+                font-family: "JetBrains Mono", Consolas, monospace;
+            }
+            .star {
+                color: var(--accent2);
+                font-weight: bold;
+            }
+            /* base table */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 12px;
+                font-size: 0.95rem;
+            }
+            th,
+            td {
+                border: 1px solid var(--line);
+                padding: 10px 12px;
+                text-align: left;
+            }
+            th {
+                background: var(--panel2);
+                color: var(--accent);
+            }
+            tr:hover td {
+                background: rgba(88, 166, 255, 0.06);
+            }
+            /* symbol grid */
+            .symrow {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 12px;
+            }
+            .symcell {
+                background: var(--panel2);
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 8px 10px;
+                text-align: center;
+                min-width: 74px;
+            }
+            .symcell .n {
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: var(--pink);
+            }
+            .symcell .d {
+                color: var(--accent2);
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+                word-break: break-all;
+            }
+            /* controls */
+            .ctrl {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px;
+                align-items: center;
+                margin: 16px 0;
+            }
+            label {
+                font-size: 0.9rem;
+                color: var(--muted);
+            }
+            input[type="number"],
+            input[type="text"],
+            select {
+                background: var(--panel2);
+                border: 1px solid var(--line);
+                color: var(--txt);
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-size: 1rem;
+                font-family: inherit;
+            }
+            input[type="range"] {
+                accent-color: var(--accent);
+            }
+            button {
+                background: var(--accent);
+                color: #08111f;
+                border: none;
+                border-radius: 8px;
+                padding: 9px 16px;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: inherit;
+            }
+            button:hover {
+                filter: brightness(1.1);
+            }
+            /* weight viz */
+            .digits {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin: 18px 0;
+            }
+            .digit {
+                min-width: 90px;
+                text-align: center;
+                background: var(--panel2);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 12px;
+            }
+            .digit .pos {
+                font-size: 0.75rem;
+                color: var(--muted);
+            }
+            .digit .val {
+                font-size: 2rem;
+                font-weight: bold;
+                color: var(--accent);
+            }
+            .digit .wt {
+                font-size: 0.8rem;
+                color: var(--accent2);
+                margin-top: 4px;
+            }
+            .digit .contrib {
+                font-size: 0.78rem;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+            .dotbox {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 3px;
+                justify-content: center;
+                min-height: 24px;
+                margin-top: 8px;
+            }
+            .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--accent2);
+            }
+            .group {
+                display: inline-flex;
+                flex-wrap: wrap;
+                gap: 2px;
+                padding: 3px;
+                border: 1px solid var(--pink);
+                border-radius: 5px;
+                margin: 1px;
+            }
+            /* nested chunk viz — single horizontal row, scroll */
+            .chunkrow {
+                display: flex;
+                gap: 12px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                margin-top: 16px;
+                padding-bottom: 10px;
+                align-items: flex-start;
+            }
+            .chunkcard {
+                flex: 0 0 auto;
+                min-width: 130px;
+                max-width: 300px;
+                background: var(--panel2);
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                padding: 12px;
+                text-align: center;
+            }
+            .chunkcard .ttl {
+                color: var(--accent);
+                font-weight: 600;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+            .chunkcard .formula {
+                font-size: 0.78rem;
+                color: var(--accent2);
+                margin: 2px 0 8px;
+            }
+            .chunkwrap {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 3px;
+                justify-content: center;
+                align-items: center;
+                min-height: 40px;
+            }
+            .chunk {
+                display: inline-flex;
+                flex-wrap: wrap;
+                gap: 1px;
+                padding: 2px;
+                border-radius: 4px;
+                align-items: center;
+                justify-content: center;
+            }
+            .chunk.l1 {
+                border: 1px solid var(--accent2);
+                background: rgba(63, 185, 80, 0.06);
+            }
+            .chunk.l2 {
+                border: 1px solid var(--pink);
+                background: rgba(247, 120, 186, 0.05);
+                max-width: 64px;
+            }
+            .chunk.l3 {
+                border: 1px solid var(--accent);
+                background: rgba(88, 166, 255, 0.05);
+                max-width: 150px;
+            }
+            .chunk.l4 {
+                max-width: 220px;
+            }
+            .chunk .dot {
+                width: 4px;
+                height: 4px;
+            }
+            .chunk.l4 {
+                border: 1px solid var(--warn);
+                background: rgba(210, 153, 34, 0.05);
+            }
+            .chunk.l5 {
+                border: 1px solid var(--pink);
+                background: rgba(247, 120, 186, 0.05);
+                max-width: 280px;
+            }
+            .bignum {
+                text-align: center;
+                font-family: monospace;
+                font-size: 1.1rem;
+                margin: 14px 0 4px;
+                color: var(--muted);
+            }
+            .bignum b {
+                font-size: 1.5rem;
+                color: var(--accent);
+            }
+            .bignum .rep {
+                color: var(--pink);
+                font-size: 1.4rem;
+            }
+            .cardbig {
+                font-family: monospace;
+                font-size: 2rem;
+                font-weight: bold;
+                color: var(--accent);
+                margin: 2px 0;
+            }
+            .countwrap {
+                position: relative;
+            }
+            .linker {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                overflow: visible;
+                z-index: 1;
+            }
+            .clabel {
+                color: var(--muted);
+                font-size: 1rem;
+                margin-right: 6px;
+            }
+            .rdig {
+                color: var(--pink);
+                font-family: monospace;
+                font-size: 1.6rem;
+                font-weight: bold;
+                padding: 0 3px;
+            }
+            .rsep {
+                color: var(--muted);
+                font-family: monospace;
+                font-size: 1.2rem;
+            }
+            .digitread {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+                margin: 30px 0 8px;
+            }
+            .dchip {
+                background: var(--panel2);
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 6px 12px;
+                font-size: 0.85rem;
+                font-family: monospace;
+                text-align: center;
+            }
+            .dchip .h {
+                color: var(--accent);
+                font-weight: 600;
+            }
+            .dchip .c {
+                font-size: 1.15rem;
+                font-weight: bold;
+                color: var(--accent2);
+            }
+            .dchip[data-pos] {
+                cursor: pointer;
+            }
+            .dchip[data-pos]:hover {
+                border-color: var(--accent);
+                background: rgba(88, 166, 255, 0.1);
+            }
+            .dchip.zero {
+                opacity: 0.5;
+            }
+            .dchip.zero .c {
+                color: var(--muted);
+                font-size: 0.9rem;
+                font-weight: normal;
+            }
+            .zoomctrl {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+                margin: 14px 0 8px;
+            }
+            .zbtn {
+                background: var(--panel2);
+                color: var(--accent);
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .zbtn:hover {
+                border-color: var(--accent);
+                filter: none;
+            }
+            .zoomcanvas {
+                display: block;
+                width: 100%;
+                height: 360px;
+                background: radial-gradient(
+                    120% 120% at 50% 0,
+                    #0c1018,
+                    #070a0e
+                );
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                cursor: grab;
+                touch-action: none;
+                margin-top: 8px;
+            }
+            .stage {
+                position: relative;
+            }
+            .fsbar {
+                display: none;
+            }
+            .stage:fullscreen {
+                width: 100vw;
+                height: 100vh;
+                background: #070a0e;
+            }
+            .stage:fullscreen .zoomcanvas {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                margin: 0;
+            }
+            .stage:fullscreen .fsbar {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+                position: absolute;
+                top: 50%;
+                right: 18px;
+                transform: translateY(-50%);
+                background: rgba(14, 17, 23, 0.82);
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                padding: 14px 12px;
+                z-index: 5;
+            }
+            .fsval {
+                font-family: monospace;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--accent);
+                text-align: center;
+            }
+            .fsbig {
+                padding: 8px 14px;
+                font-size: 1rem;
+            }
+            .fsrange {
+                writing-mode: vertical-lr;
+                direction: rtl;
+                height: 160px;
+                margin: 6px auto;
+            }
+            .out {
+                font-size: 1.2rem;
+                text-align: center;
+                margin-top: 12px;
+            }
+            .out b {
+                color: var(--pink);
+            }
+            /* converter result */
+            .convgrid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 12px;
+                margin-top: 16px;
+            }
+            .convcard {
+                background: var(--panel2);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 14px;
+            }
+            .convcard .lbl {
+                color: var(--muted);
+                font-size: 0.85rem;
+            }
+            .convcard .v {
+                font-family: monospace;
+                font-size: 1.4rem;
+                color: var(--accent);
+                word-break: break-all;
+                margin-top: 4px;
+            }
+            .msb {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.8rem;
+                color: var(--muted);
+                margin-top: 6px;
+            }
+            .msb span:first-child {
+                color: var(--pink);
+            }
+            .msb span:last-child {
+                color: var(--accent2);
+            }
+            footer {
+                text-align: center;
+                color: var(--muted);
+                padding: 30px;
+                font-size: 0.85rem;
+            }
+            a.link {
+                color: var(--accent);
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Number System</h1>
+            <div class="sub">ระบบเลขฐาน — สรุป Logic Note EP.1</div>
+            <div class="badge">Interactive</div>
+        </header>
+
+        <nav>
+            <a href="#basic">Basic Rule</a>
+            <a href="#bases">เลขฐานต่างๆ</a>
+            <a href="#weight">Weight</a>
+            <a href="#msb">MSB / LSB</a>
+            <a href="#viz">Visualizer</a>
+        </nav>
+
+        <main>
+            <!-- ===== BASIC RULE ===== -->
+            <section id="basic">
+                <h2>Basic Rule</h2>
+                <p>
+                    การนับปริมาณ แล้วแทนปริมาณเหล่านั้นด้วย<b
+                        >สัญลักษณ์ที่แตกต่างกัน</b
+                    >
+                </p>
+                <h3>ตัวอย่าง — ระบบฐานสิบ (Decimal)</h3>
+                <p class="muted">
+                    แทนปริมาณที่แตกต่างกันด้วยสัญลักษณ์เลขอารบิก 0–9 ลอง hover
+                    ดูว่าแต่ละสัญลักษณ์แทน "ดาว" กี่ตัว
+                </p>
+                <div class="symrow" id="symrow"></div>
+            </section>
+
+            <!-- ===== BASES ===== -->
+            <section id="bases">
+                <h2>รูปแบบอื่นๆ (เลขฐานอื่น)</h2>
+                <p class="note">
+                    <b>! สังเกต:</b> เลขที่อยู่ข้างหลัง "ฐาน" =
+                    จำนวนสัญลักษณ์ที่ระบบนั้นมีไว้แทนปริมาณ
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ฐาน</th>
+                            <th>ชื่อ</th>
+                            <th>จำนวนสัญลักษณ์</th>
+                            <th>สัญลักษณ์</th>
+                            <th>ใช้กับ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2</td>
+                            <td>Binary</td>
+                            <td>2</td>
+                            <td class="mono">0, 1</td>
+                            <td>ระบบคอมพิวเตอร์</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Octal</td>
+                            <td>8</td>
+                            <td class="mono">0–7</td>
+                            <td>ระบบอินโทรปาร์ต</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Decimal</td>
+                            <td>10</td>
+                            <td class="mono">0–9</td>
+                            <td>ใช้ทั่วไป</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Hexadecimal</td>
+                            <td>16</td>
+                            <td class="mono">0–9, A–F</td>
+                            <td>คอมพิวเตอร์ (มีแอพพลิเคชั่น)</td>
+                        </tr>
+                        <tr>
+                            <td>60</td>
+                            <td>Sexagesimal</td>
+                            <td>60</td>
+                            <td>สัญลักษณ์ Babylonian</td>
+                            <td>การค้าขาย (แบ่งย่อยได้เยอะสุด)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="muted" style="margin-top: 14px">
+                    ฐาน 60 — สัญลักษณ์ของชาว Babylonian:
+                </p>
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Babylonian_numerals.svg/1920px-Babylonian_numerals.svg.png"
+                    alt="Babylonian numerals"
+                    style="
+                        max-width: 100%;
+                        border-radius: 10px;
+                        background: #fff;
+                        padding: 8px;
+                        margin-top: 6px;
+                    "
+                />
+                <p class="note" style="margin-top: 18px">
+                    เมื่อปริมาณเยอะขึ้น
+                    สัญลักษณ์ที่คิดไว้ไม่พอแทนปริมาณที่แตกต่างกัน → จึงมี
+                    concept ของ <b>"หลัก"</b>
+                </p>
+            </section>
+
+            <!-- ===== WEIGHT ===== -->
+            <section id="weight">
+                <h2>Weight — น้ำหนักของแต่ละหลัก</h2>
+                <p>
+                    <b>Weight</b> :
+                    จำนวนปริมาณสูงสุดที่แทนด้วยสัญลักษณ์ได้ในแต่ละหลัก
+                </p>
+                <p class="muted">
+                    เมื่อสัญลักษณ์ในหลักหนึ่งหมด (นับครบเท่าจำนวนฐาน) →
+                    ขยับไปอีกหลักทางซ้าย แล้วเริ่มนับใหม่
+                    โดยน้ำหนักทวีคูณเท่าจำนวนฐาน
+                </p>
+
+                <p class="muted">
+                    หลัก 1 = ค่า×ฐาน^0 &nbsp;|&nbsp; หลัก 2 = ค่า×ฐาน^1
+                    &nbsp;|&nbsp; หลัก 3 = ค่า×ฐาน^2 …
+                    (น้ำหนักทวีคูณเท่าจำนวนฐาน)
+                </p>
+                <p class="note">
+                    <b>ข้อสรุป:</b> แต่ละหลักนับ "จำนวนกลุ่มปริมาณ" ของหลักนั้น
+                    จะเริ่มนับหลักถัดไปเมื่อหลักก่อนหน้านับครบเท่าจำนวนฐานแล้ว
+                    (ไม่มีสัญลักษณ์เหลือพอแทนในหลักเดิม)
+                </p>
+
+                <h3 id="msb" style="margin-top: 22px">MSB / LSB</h3>
+                <p>
+                    ระบบนิยมปัจจุบัน: หลักค่ามากไว้<b>ทางซ้าย</b>,
+                    หลักค่าน้อยไว้<b>ทางขวา</b>
+                </p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td style="color: var(--pink)">
+                                <b>MSB</b> — Most Significant Bit
+                            </td>
+                            <td>หลักซ้ายสุด, น้ำหนักมากสุด</td>
+                        </tr>
+                        <tr>
+                            <td style="color: var(--accent2)">
+                                <b>LSB</b> — Least Significant Bit
+                            </td>
+                            <td>หลักขวาสุด, น้ำหนักน้อยสุด</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="muted" style="margin-top: 14px">
+                    แต่ละหลักนับจำนวนกลุ่มปริมาณว่าต้องนับกี่กลุ่ม
+                    แล้วถัดไปยังหลักถัดไป — มากสุดอยู่ซ้าย (MSB), น้อยสุดอยู่ขวา
+                    (LSB)
+                </p>
+            </section>
+
+            <!-- ===== VISUALIZER ===== -->
+            <section id="viz">
+                <h2>Visualizer</h2>
+                <p class="muted">
+                    เลือกฐาน + ใส่/ลากจำนวน → ดูแต่ละหลักเป็นก้อนซ้อน (หลักใหญ่
+                    = ก้อนใหญ่ ซ้ายสุด). zoom/ลากสำรวจ,
+                    คลิกชื่อหลักหรือปุ่มหลักเพื่อโฟกัสก้อนนั้น
+                </p>
+                <div class="zoomctrl" id="uZoom">
+                    <label
+                        >ฐาน:
+                        <select id="uBase">
+                            <option value="2">2 (Binary)</option>
+                            <option value="8">8 (Octal)</option>
+                            <option value="10" selected>10 (Decimal)</option>
+                            <option value="16">16 (Hex)</option>
+                            <option value="60">60 (Babylonian)</option>
+                        </select>
+                    </label>
+                    <label
+                        >จำนวน (ฐานสิบ):
+                        <input
+                            type="number"
+                            id="uNum"
+                            min="0"
+                            max="999999"
+                            value="1234"
+                            style="width: 120px"
+                    /></label>
+                    <input
+                        type="range"
+                        id="uVal"
+                        min="0"
+                        max="999999"
+                        value="1234"
+                        style="flex: 1; min-width: 160px"
+                    />
+                    <button class="zbtn" data-act="reset">รีเซ็ตมุมมอง</button>
+                    <button class="zbtn" data-act="full">⛶ เต็มจอ</button>
+                </div>
+                <div class="countwrap">
+                    <div class="bignum" id="uBig"></div>
+                    <svg class="linker" id="uLink"></svg>
+                    <div class="digitread" id="uRead"></div>
+                </div>
+                <p class="muted" style="font-size: 0.82rem">
+                    ลากเลื่อน · scroll = zoom · ก้อนเล็กเหลือเป็นจุด
+                </p>
+                <div class="stage" id="uStage">
+                    <canvas id="uCanvas" class="zoomcanvas"></canvas>
+                    <div class="fsbar" id="uBar">
+                        <button class="zbtn" data-act="exit">⛶ ออก</button>
+                        <span class="fsval" id="uBarLab">0</span>
+                        <button class="zbtn fsbig" data-step="100">+100</button>
+                        <button class="zbtn fsbig" data-step="10">+10</button>
+                        <button class="zbtn fsbig" data-step="1">+1</button>
+                        <input
+                            type="range"
+                            id="uBarRange"
+                            class="fsrange"
+                            min="0"
+                            max="999999"
+                            value="1234"
+                        />
+                        <button class="zbtn fsbig" data-step="-1">−1</button>
+                        <button class="zbtn fsbig" data-step="-10">−10</button>
+                        <button class="zbtn fsbig" data-step="-100">−100</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            สรุปจาก Logic Note — EP1: Number System &nbsp;·&nbsp; สร้างเป็น
+            interactive HTML
+        </footer>
+
+        <script>
+            const DIGITS = "0123456789ABCDEF";
+
+            /* ---- symbol row (decimal stars) ---- */
+            (function () {
+                const row = document.getElementById("symrow");
+                for (let i = 0; i <= 9; i++) {
+                    const stars = i === 0 ? "∅" : "*".repeat(i);
+                    const c = document.createElement("div");
+                    c.className = "symcell";
+                    c.title = i === 0 ? "ไม่มี" : i + " = " + stars;
+                    c.innerHTML = `<div class="n">${i}</div><div class="d">${stars}</div>`;
+                    row.appendChild(c);
+                }
+            })();
+
+            /* ---- zoomable chunk universe (powers-of-ten style) ---- */
+            const GAPF = 0.25,
+                PADF = 0.5; // gap/pad ภายในก้อน (หน่วย dot)
+            const DOTMIN = 2.2; // ก้อนเล็กกว่านี้ → วาดเป็นจุดทึบ
+            const LEAF = "#3fb950";
+            const BORDERS = [
+                "#3fb950",
+                "#f778ba",
+                "#58a6ff",
+                "#d29922",
+                "#a371f7",
+                "#ff7b72",
+            ];
+            const GREL = 0.28,
+                PREL = 0.32; // gap/pad เป็นสัดส่วนของขนาดลูก → แยกก้อนชัดทุกชั้น
+            const _w = {},
+                _h = {};
+            function grid(base, L) {
+                // จัดก้อนลูก → ทรงสี่เหลี่ยมจตุรัส
+                if (base === 2) return L % 2 ? { c: 1, r: 2 } : { c: 2, r: 1 }; // ฐาน2 สลับแนว → สี่เหลี่ยม
+                const c = Math.ceil(Math.sqrt(base));
+                return { c, r: Math.ceil(base / c) };
+            }
+            function sizeW(base, L) {
+                // ความกว้างก้อน (หน่วย dot)
+                if (L === 0) return 1;
+                const k = base + "_" + L;
+                if (_w[k] !== undefined) return _w[k];
+                const cols = grid(base, L).c,
+                    ch = sizeW(base, L - 1);
+                return (_w[k] =
+                    cols * ch + (cols - 1) * ch * GREL + 2 * ch * PREL);
+            }
+            function sizeH(base, L) {
+                // ความสูงก้อน
+                if (L === 0) return 1;
+                const k = base + "_" + L;
+                if (_h[k] !== undefined) return _h[k];
+                const rows = grid(base, L).r,
+                    ch = sizeH(base, L - 1);
+                return (_h[k] =
+                    rows * ch + (rows - 1) * ch * GREL + 2 * ch * PREL);
+            }
+            const digLabel = (d) => (d < 16 ? DIGITS[d] : String(d)); // ฐาน>16 ใช้เลขสิบล้วน
+            function makeZoom(
+                baseSelId,
+                numId,
+                rangeId,
+                canvasId,
+                bigId,
+                readId,
+                linkId,
+                ctrlSel,
+            ) {
+                const sel = document.getElementById(baseSelId),
+                    num = document.getElementById(numId),
+                    rng = document.getElementById(rangeId),
+                    cv = document.getElementById(canvasId),
+                    big = document.getElementById(bigId),
+                    read = document.getElementById(readId),
+                    link = document.getElementById(linkId),
+                    ctx = cv.getContext("2d");
+                let base = +sel.value;
+                let W = 0,
+                    H = 0,
+                    scale = 1,
+                    panX = 0,
+                    panY = 0,
+                    packs = [],
+                    blocks = [],
+                    drag = null;
+
+                function layout(val) {
+                    // วาง top-pack แต่ละหลักในแนวนอน world space (center line y=0)
+                    let digs = val === 0 ? [0] : [];
+                    let m = val;
+                    while (m > 0) {
+                        digs.unshift(m % base);
+                        m = Math.floor(m / base);
+                    }
+                    const len = digs.length,
+                        sep = base > 16 ? '<span class="rsep">:</span>' : "";
+                    // นับได้ (โชว์เลขฐานตัวเองอย่างเดียว) — แต่ละหลักเป็น span เชื่อมเส้นได้
+                    big.innerHTML =
+                        `<span class="clabel">นับได้</span>` +
+                        digs
+                            .map(
+                                (d, idx) =>
+                                    `<span class="rdig" data-i="${idx}">${digLabel(d)}</span>`,
+                            )
+                            .join(sep);
+                    // แถบสรุปจำนวนก้อนต่อหลัก (อยู่กับที่ตลอด, รวมหลักที่เป็น 0)
+                    read.innerHTML = digs
+                        .map((d, idx) => {
+                            const pos = len - idx,
+                                w = Math.pow(base, pos - 1);
+                            return d === 0
+                                ? `<div class="dchip zero" data-i="${idx}"><div class="h">หลัก ${pos}</div><div class="c">ไม่มี</div></div>`
+                                : `<div class="dchip" data-i="${idx}" data-pos="${pos}"><div class="h">หลัก ${pos} (×${w})</div><div class="c">${d} ก้อน</div></div>`;
+                        })
+                        .join("");
+                    packs = [];
+                    blocks = [];
+                    let cx = 0,
+                        half = 0;
+                    const GAP = sizeW(base, len - 1) * 0.12; // ช่องไฟสม่ำเสมอ อิงก้อนใหญ่สุด
+                    digs.forEach((d, idx) => {
+                        // idx 0 = หลักใหญ่สุด (ซ้าย)
+                        const level = len - 1 - idx,
+                            pos = level + 1,
+                            sw = sizeW(base, level),
+                            sh = sizeH(base, level),
+                            weight = Math.pow(base, level);
+                        if (d === 0) return; // ข้ามหลักที่เป็น 0 (ไม่รก)
+                        const cols = Math.ceil(Math.sqrt(d)),
+                            rows = Math.ceil(d / cols),
+                            gx = sw * 0.28,
+                            gy = sh * 0.28;
+                        const blockW = cols * sw + (cols - 1) * gx,
+                            blockH = rows * sh + (rows - 1) * gy;
+                        const y0 = -blockH / 2;
+                        for (let i = 0; i < d; i++) {
+                            const r = Math.floor(i / cols),
+                                c = i % cols;
+                            packs.push({
+                                x: cx + c * (sw + gx),
+                                y: y0 + r * (sh + gy),
+                                level,
+                                sw,
+                                sh,
+                            });
+                        }
+                        blocks.push({
+                            x: cx,
+                            w: blockW,
+                            h: blockH,
+                            pos,
+                            d,
+                            weight,
+                        });
+                        cx += blockW + GAP;
+                        half = Math.max(half, blockH / 2);
+                    });
+                    layout._w = cx || 1;
+                    layout._h = half * 2 || 1;
+                    // chip คลิกได้ → โฟกัสหลักนั้น
+                    read.querySelectorAll(".dchip[data-pos]").forEach((ch) => {
+                        ch.onclick = () => {
+                            const b = blocks.find(
+                                (x) => x.pos == ch.dataset.pos,
+                            );
+                            if (b) focusBlock(b);
+                        };
+                    });
+                    drawLinks();
+                }
+                function drawLinks() {
+                    // เส้นปะ เลขแต่ละหลัก → ปุ่มหลัก
+                    const wr = link.parentElement.getBoundingClientRect();
+                    link.setAttribute(
+                        "viewBox",
+                        `0 0 ${wr.width} ${wr.height}`,
+                    );
+                    let s = "";
+                    big.querySelectorAll(".rdig").forEach((d) => {
+                        const chip = read.querySelector(
+                            `.dchip[data-i="${d.dataset.i}"]`,
+                        );
+                        if (!chip) return;
+                        const a = d.getBoundingClientRect(),
+                            b = chip.getBoundingClientRect();
+                        const x1 = a.left + a.width / 2 - wr.left,
+                            y1 = a.bottom - wr.top;
+                        const x2 = b.left + b.width / 2 - wr.left,
+                            y2 = b.top - wr.top;
+                        s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3 4" opacity=".45"/>`;
+                    });
+                    link.innerHTML = s;
+                }
+                function fit() {
+                    const ww = layout._w || 1,
+                        wh = layout._h || 1;
+                    scale = Math.min(W / (ww * 1.06), (H - 40) / (wh * 1.1));
+                    panX = (W - ww * scale) / 2;
+                    panY = H / 2; // center line อยู่กลางจอ
+                    draw();
+                }
+                function fillCircle(x, y, w, h) {
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        x + w / 2,
+                        y + h / 2,
+                        Math.max(0.5, w / 2),
+                        Math.max(0.5, h / 2),
+                        0,
+                        0,
+                        6.2832,
+                    );
+                    ctx.fill();
+                }
+                function roundRect(x, y, w, h, r) {
+                    ctx.beginPath();
+                    ctx.roundRect(x, y, w, h, r);
+                }
+                function node(wx, wy, level) {
+                    const sw = sizeW(base, level),
+                        sh = sizeH(base, level),
+                        ssw = sw * scale,
+                        ssh = sh * scale,
+                        sx = wx * scale + panX,
+                        sy = wy * scale + panY;
+                    if (sx + ssw < 0 || sy + ssh < 0 || sx > W || sy > H)
+                        return; // cull offscreen
+                    if (Math.min(ssw, ssh) < DOTMIN || level === 0) {
+                        // เล็กมาก → จุดวงกลม
+                        ctx.fillStyle = LEAF;
+                        fillCircle(sx, sy, Math.max(1, ssw), Math.max(1, ssh));
+                        return;
+                    }
+                    const cols = grid(base, level).c,
+                        childW = sizeW(base, level - 1),
+                        childH = sizeH(base, level - 1);
+                    const padX = childW * PREL,
+                        gapX = childW * GREL,
+                        padY = childH * PREL,
+                        gapY = childH * GREL;
+                    for (let i = 0; i < base; i++) {
+                        const r = Math.floor(i / cols),
+                            c = i % cols; // gap/pad สัดส่วน (ตรงกับ sizeW/H)
+                        node(
+                            wx + padX + c * (childW + gapX),
+                            wy + padY + r * (childH + gapY),
+                            level - 1,
+                        );
+                    }
+                    const m = Math.min(ssw, ssh);
+                    if (m > 4) {
+                        // ขอบมุมโค้ง หนาตามชั้น → แยกชั้นชัด
+                        ctx.strokeStyle = BORDERS[level % BORDERS.length];
+                        ctx.lineWidth = Math.max(
+                            0.6,
+                            Math.min(m * 0.04, 1 + level * 1.2),
+                        );
+                        roundRect(
+                            sx + 0.5,
+                            sy + 0.5,
+                            ssw - 1,
+                            ssh - 1,
+                            m * 0.16,
+                        );
+                        ctx.stroke();
+                    }
+                }
+                function draw() {
+                    ctx.clearRect(0, 0, W, H);
+                    packs.forEach((p) => {
+                        const ssw = p.sw * scale,
+                            ssh = p.sh * scale,
+                            sx = p.x * scale + panX,
+                            sy = p.y * scale + panY;
+                        const onscr = !(
+                                sx + ssw < 0 ||
+                                sy + ssh < 0 ||
+                                sx > W ||
+                                sy > H
+                            ),
+                            big2 = Math.min(ssw, ssh) >= DOTMIN && p.level > 0,
+                            rr = Math.min(ssw, ssh) * 0.16;
+                        if (onscr && big2) {
+                            ctx.fillStyle = "rgba(88,166,255,.08)";
+                            roundRect(sx, sy, ssw, ssh, rr);
+                            ctx.fill();
+                        }
+                        node(p.x, p.y, p.level);
+                        if (onscr && big2) {
+                            ctx.strokeStyle = "#58a6ff";
+                            ctx.lineWidth = Math.max(
+                                1.5,
+                                Math.min(ssw, ssh) * 0.015,
+                            );
+                            roundRect(sx + 0.5, sy + 0.5, ssw - 1, ssh - 1, rr);
+                            ctx.stroke();
+                        }
+                    });
+                    // label หลัก กำกับด้านบน (screen space, อยู่ตลอด)
+                    ctx.font = "12px monospace";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "top";
+                    blocks.forEach((b) => {
+                        let cxs = (b.x + b.w / 2) * scale + panX;
+                        cxs = Math.max(40, Math.min(W - 40, cxs)); // ดึงให้อยู่ในจอเสมอ
+                        ctx.fillStyle = "#58a6ff";
+                        ctx.fillText(`▸ หลัก ${b.pos}`, cxs, 6);
+                        ctx.fillStyle = "#9aa7b4";
+                        ctx.fillText(`${b.d} ก้อน ×${b.weight}`, cxs, 20);
+                        b._hit = { x: cxs - 58, y: 4, w: 116, h: 30 }; // กรอบคลิก label
+                    });
+                }
+                function resize() {
+                    const fs = document.fullscreenElement === cv;
+                    const r = cv.getBoundingClientRect();
+                    W = cv.width = r.width;
+                    H = cv.height = fs ? window.innerHeight : 360;
+                }
+                function setVal(src) {
+                    // เปลี่ยนเลข แต่คงมุมมอง/zoom เดิมไว้
+                    let v = Math.max(
+                        0,
+                        Math.min(999999, parseInt((src || num).value) || 0),
+                    );
+                    num.value = v;
+                    rng.value = v;
+                    layout(v);
+                    draw();
+                }
+                // zoom toward point (clamp กัน scale ระเบิด → วาดเพี้ยน)
+                const SMIN = 1e-4,
+                    SMAX = 120;
+                function zoomAt(cx, cy, f) {
+                    const ns = Math.max(SMIN, Math.min(SMAX, scale * f));
+                    if (ns === scale) return;
+                    const wx = (cx - panX) / scale,
+                        wy = (cy - panY) / scale;
+                    scale = ns;
+                    panX = cx - wx * scale;
+                    panY = cy - wy * scale;
+                    draw();
+                }
+                function animateTo(ts, tx, ty) {
+                    const s0 = scale,
+                        x0 = panX,
+                        y0 = panY,
+                        t0 = performance.now(),
+                        dur = 380;
+                    (function step(now) {
+                        let k = Math.min(1, (now - t0) / dur);
+                        k =
+                            k < 0.5
+                                ? 2 * k * k
+                                : 1 - Math.pow(-2 * k + 2, 2) / 2;
+                        scale = s0 + (ts - s0) * k;
+                        panX = x0 + (tx - x0) * k;
+                        panY = y0 + (ty - y0) * k;
+                        draw();
+                        if (k < 1) requestAnimationFrame(step);
+                    })(performance.now());
+                }
+                function focusBlock(b) {
+                    // zoom ไปดูก้อนของหลักนั้น
+                    const ts = Math.max(
+                        SMIN,
+                        Math.min(
+                            SMAX,
+                            Math.min(
+                                W / (b.w * 1.3),
+                                (H - 50) / ((b.h || 1) * 1.3),
+                            ),
+                        ),
+                    );
+                    animateTo(ts, W / 2 - (b.x + b.w / 2) * ts, H / 2);
+                }
+                let moved = false;
+                cv.addEventListener(
+                    "wheel",
+                    (e) => {
+                        e.preventDefault();
+                        const r = cv.getBoundingClientRect();
+                        zoomAt(
+                            e.clientX - r.left,
+                            e.clientY - r.top,
+                            e.deltaY < 0 ? 1.18 : 1 / 1.18,
+                        );
+                    },
+                    { passive: false },
+                );
+                cv.addEventListener("mousedown", (e) => {
+                    drag = { x: e.clientX, y: e.clientY };
+                    moved = false;
+                    cv.style.cursor = "grabbing";
+                });
+                window.addEventListener("mousemove", (e) => {
+                    if (!drag) return;
+                    panX += e.clientX - drag.x;
+                    panY += e.clientY - drag.y;
+                    drag = { x: e.clientX, y: e.clientY };
+                    moved = true;
+                    draw();
+                });
+                window.addEventListener("mouseup", () => {
+                    if (drag) {
+                        drag = null;
+                        cv.style.cursor = "grab";
+                    }
+                });
+                cv.addEventListener("click", (e) => {
+                    if (moved) return;
+                    const r = cv.getBoundingClientRect(),
+                        mx = e.clientX - r.left,
+                        my = e.clientY - r.top;
+                    for (const b of blocks) {
+                        const h = b._hit;
+                        if (
+                            h &&
+                            mx >= h.x &&
+                            mx <= h.x + h.w &&
+                            my >= h.y &&
+                            my <= h.y + h.h
+                        ) {
+                            focusBlock(b);
+                            break;
+                        }
+                    }
+                });
+                cv.addEventListener("mousemove", (e) => {
+                    if (drag) return;
+                    const r = cv.getBoundingClientRect(),
+                        mx = e.clientX - r.left,
+                        my = e.clientY - r.top;
+                    let on = false;
+                    for (const b of blocks) {
+                        const h = b._hit;
+                        if (
+                            h &&
+                            mx >= h.x &&
+                            mx <= h.x + h.w &&
+                            my >= h.y &&
+                            my <= h.y + h.h
+                        ) {
+                            on = true;
+                            break;
+                        }
+                    }
+                    cv.style.cursor = on ? "pointer" : "grab";
+                });
+                document.querySelectorAll(ctrlSel + " .zbtn").forEach((b) => {
+                    b.onclick = () => {
+                        if (b.dataset.act === "full") {
+                            if (document.fullscreenElement === cv)
+                                document.exitFullscreen();
+                            else cv.requestFullscreen();
+                        } else fit();
+                    };
+                });
+                cv.addEventListener("fullscreenchange", () => {
+                    resize();
+                    fit();
+                });
+                sel.onchange = () => {
+                    base = +sel.value;
+                    setVal(num);
+                    fit();
+                }; // เปลี่ยนฐาน → จัดใหม่ + fit
+                num.oninput = () => setVal(num);
+                rng.oninput = () => setVal(rng);
+                window.addEventListener("resize", () => {
+                    resize();
+                    fit();
+                    drawLinks();
+                });
+                resize();
+                setVal();
+                fit(); // fit แค่ตอนเริ่ม
+            }
+            makeZoom(
+                "uBase",
+                "uNum",
+                "uVal",
+                "uCanvas",
+                "uBig",
+                "uRead",
+                "uLink",
+                "#uZoom",
+            );
+        </script>
+    </body>
+</html>
