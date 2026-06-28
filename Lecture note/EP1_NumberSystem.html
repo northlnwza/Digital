@@ -482,7 +482,8 @@
             .stage {
                 position: relative;
             }
-            .fsbar {
+            .fsbar,
+            .fscluster {
                 display: none;
             }
             .stage:fullscreen {
@@ -498,35 +499,154 @@
             }
             .stage:fullscreen .fsbar {
                 display: flex;
-                flex-direction: column;
-                gap: 8px;
-                align-items: stretch;
+                flex-direction: row;
+                align-items: center;
+                gap: 18px;
                 position: absolute;
-                top: 50%;
-                right: 18px;
-                transform: translateY(-50%);
-                background: rgba(14, 17, 23, 0.82);
+                left: 50%;
+                bottom: 22px;
+                transform: translateX(-50%);
+                width: max-content;
+                max-width: 94vw;
+                background: rgba(14, 17, 23, 0.86);
+                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(8px);
                 border: 1px solid var(--line);
-                border-radius: 12px;
-                padding: 14px 12px;
+                border-radius: 14px;
+                padding: 10px 16px;
                 z-index: 5;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             }
-            .fsval {
-                font-family: monospace;
-                font-size: 1.5rem;
-                font-weight: bold;
+            .fsgroup {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .fsgrow {
+                flex: 1;
+                min-width: 230px;
+            }
+            .fslbl {
+                color: var(--muted);
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+            /* value stepper + readout */
+            .fsstep {
+                width: 38px;
+                height: 38px;
+                border: 1px solid var(--line);
+                background: var(--panel2);
                 color: var(--accent);
-                text-align: center;
+                border-radius: 9px;
+                font-size: 1.4rem;
+                line-height: 1;
+                cursor: pointer;
             }
-            .fsbig {
-                padding: 8px 14px;
-                font-size: 1rem;
+            .fsstep:hover {
+                background: var(--line);
             }
             .fsrange {
-                writing-mode: vertical-lr;
-                direction: rtl;
-                height: 160px;
-                margin: 6px auto;
+                flex: 1;
+                accent-color: var(--accent);
+            }
+            /* digit dropdown + icon buttons */
+            .fssel {
+                background: var(--panel2);
+                color: var(--accent);
+                border: 1px solid var(--line);
+                border-radius: 9px;
+                padding: 7px 10px;
+                font-family: monospace;
+                font-size: 0.95rem;
+                cursor: pointer;
+            }
+            .fsicon {
+                width: 38px;
+                height: 38px;
+                border: 1px solid var(--line);
+                background: var(--panel2);
+                color: var(--txt);
+                border-radius: 9px;
+                cursor: pointer;
+                font-size: 1.1rem;
+            }
+            .fsicon:hover {
+                background: var(--line);
+            }
+            .fsx {
+                color: var(--pink);
+            }
+            /* ก้าวละ: ช่องพิมพ์เอง */
+            .fsnuminput {
+                width: 76px;
+                background: var(--panel2);
+                color: var(--accent);
+                border: 1px solid var(--line);
+                border-radius: 9px;
+                padding: 7px 9px;
+                font-family: monospace;
+                font-size: 1rem;
+                text-align: center;
+            }
+            /* คลัสเตอร์ขวาล่าง: reset ใหญ่ + ดูหลัก (fan ออกตอน hover) */
+            .stage:fullscreen .fscluster {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+                position: absolute;
+                right: 22px;
+                bottom: 22px;
+                z-index: 6;
+            }
+            .fsseg {
+                display: flex;
+                gap: 3px;
+                background: rgba(14, 17, 23, 0.92);
+                -webkit-backdrop-filter: blur(8px);
+                backdrop-filter: blur(8px);
+                border: 1px solid var(--line);
+                border-radius: 11px;
+                padding: 4px;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            }
+            .fsseg button {
+                border: 0;
+                background: transparent;
+                color: var(--muted);
+                padding: 9px 16px;
+                border-radius: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: 0.12s;
+            }
+            .fsseg button:hover {
+                color: var(--txt);
+            }
+            .fsseg button.on {
+                background: var(--accent);
+                color: #08111c;
+                font-weight: bold;
+            }
+            .fsfab {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--accent);
+                color: #08111c;
+                font-weight: bold;
+                border: 0;
+                border-radius: 12px;
+                padding: 14px 20px;
+                font-size: 1.05rem;
+                cursor: pointer;
+                box-shadow: 0 8px 24px rgba(88, 166, 255, 0.4);
+                transition: 0.14s;
+            }
+            .fsfab:hover {
+                filter: brightness(1.08);
+                transform: translateY(-1px);
             }
             .out {
                 font-size: 1.2rem;
@@ -799,23 +919,48 @@
                 <div class="stage" id="uStage">
                     <canvas id="uCanvas" class="zoomcanvas"></canvas>
                     <div class="fsbar" id="uBar">
-                        <button class="zbtn" data-act="exit">⛶ ออก</button>
-                        <span class="fsval" id="uBarLab">0</span>
-                        <button class="zbtn fsbig" data-step="100">+100</button>
-                        <button class="zbtn fsbig" data-step="10">+10</button>
-                        <button class="zbtn fsbig" data-step="1">+1</button>
-                        <input
-                            type="range"
-                            id="uBarRange"
-                            class="fsrange"
-                            min="0"
-                            max="999999"
-                            value="1234"
-                        />
-                        <button class="zbtn fsbig" data-step="-1">−1</button>
-                        <button class="zbtn fsbig" data-step="-10">−10</button>
-                        <button class="zbtn fsbig" data-step="-100">
-                            −100
+                        <button class="fsicon fsx" data-act="exit" title="ออกจากเต็มจอ">
+                            ✕
+                        </button>
+                        <div class="fsgroup">
+                            <span class="fslbl">ฐาน</span>
+                            <select class="fssel" id="uBarBase"></select>
+                        </div>
+                        <div class="fsgroup fsgrow">
+                            <span class="fslbl">จำนวน</span>
+                            <button class="fsstep" data-dir="-1" title="ลด">
+                                −
+                            </button>
+                            <input
+                                type="range"
+                                id="uBarRange"
+                                class="fsrange"
+                                min="0"
+                                max="999999"
+                                value="1234"
+                            />
+                            <button class="fsstep" data-dir="1" title="เพิ่ม">
+                                +
+                            </button>
+                        </div>
+                        <div class="fsgroup">
+                            <span class="fslbl">ก้าวละ</span>
+                            <input
+                                type="number"
+                                id="uBarStep"
+                                class="fsnuminput"
+                                min="1"
+                                value="1"
+                            />
+                        </div>
+                    </div>
+                    <div class="fscluster" id="uCluster">
+                        <div class="fsseg" id="uBarMode">
+                            <button data-mode="scatter">กระจาย</button>
+                            <button data-mode="row">เรียง</button>
+                        </div>
+                        <button class="fsfab" data-act="reset">
+                            ⟲ รีเซ็ตมุมมอง
                         </button>
                     </div>
                 </div>
@@ -846,7 +991,7 @@
             /* ---- zoomable chunk universe (powers-of-ten style) ---- */
             const GAPF = 0.25,
                 PADF = 0.5; // gap/pad ภายในก้อน (หน่วย dot)
-            const DOTMIN = 2.2; // ก้อนเล็กกว่านี้ → วาดเป็นจุดทึบ
+            const DOTMIN = 3.6; // ก้อนเล็กกว่านี้ → วาดเป็นจุดทึบ (สูงขึ้น = ยุบเร็ว ลดแลค)
             const LEAF = "#3fb950";
             const BORDERS = [
                 "#3fb950",
@@ -905,7 +1050,17 @@
                     read = document.getElementById(readId),
                     link = document.getElementById(linkId),
                     ctx = cv.getContext("2d");
+                const stage = cv.closest(".stage"),
+                    bar = stage ? stage.querySelector(".fsbar") : null,
+                    barRange = stage ? stage.querySelector("#uBarRange") : null,
+                    barBase = stage ? stage.querySelector("#uBarBase") : null,
+                    barStep = stage ? stage.querySelector("#uBarStep") : null,
+                    barMode = stage ? stage.querySelector("#uBarMode") : null;
                 let base = +sel.value;
+                // โหมดในเต็มจอ; นอกเต็มจอบังคับ "row" (เหมือนเดิม)
+                let viewMode = "scatter";
+                const effMode = () =>
+                    document.fullscreenElement ? viewMode : "row";
                 let W = 0,
                     H = 0,
                     scale = 1,
@@ -913,6 +1068,12 @@
                     panY = 0,
                     packs = [],
                     blocks = [],
+                    focusIdx = -1,
+                    _leaf = [], // batch leaf-dot → fill รวมทีเดียว ลดแลค
+                    dotMin = DOTMIN, // ยุบจุด; เต็มจอตั้งสูงขึ้น คุมความหนาแน่น
+                    _dm = DOTMIN, // dotMin ใช้จริงต่อเฟรม (หยาบลงตอนขยับ)
+                    interacting = false, // กำลังลาก/ซูม → วาดหยาบเพื่อความลื่น
+                    idleTimer = 0,
                     drag = null;
 
                 function layout(val) {
@@ -946,48 +1107,139 @@
                         .join("");
                     packs = [];
                     blocks = [];
-                    let cx = 0,
-                        half = 0;
-                    const GAP = sizeW(base, len - 1) * 0.12; // ช่องไฟสม่ำเสมอ อิงก้อนใหญ่สุด
+                    // รวบกลุ่มหลักที่ไม่ใช่ 0 ก่อน
+                    const groups = [];
                     digs.forEach((d, idx) => {
-                        // idx 0 = หลักใหญ่สุด (ซ้าย)
+                        // idx 0 = หลักใหญ่สุด
                         const level = len - 1 - idx,
                             pos = level + 1,
                             sw = sizeW(base, level),
                             sh = sizeH(base, level),
                             weight = Math.pow(base, level);
-                        if (d === 0) return; // ข้ามหลักที่เป็น 0 (ไม่รก)
+                        if (d === 0) return; // ข้ามหลักที่เป็น 0
                         const cols = Math.ceil(Math.sqrt(d)),
                             rows = Math.ceil(d / cols),
                             gx = sw * 0.28,
                             gy = sh * 0.28;
                         const blockW = cols * sw + (cols - 1) * gx,
                             blockH = rows * sh + (rows - 1) * gy;
-                        const y0 = -blockH / 2;
-                        for (let i = 0; i < d; i++) {
-                            const r = Math.floor(i / cols),
-                                c = i % cols;
-                            packs.push({
-                                x: cx + c * (sw + gx),
-                                y: y0 + r * (sh + gy),
-                                level,
-                                sw,
-                                sh,
-                            });
-                        }
-                        blocks.push({
-                            x: cx,
-                            w: blockW,
-                            h: blockH,
-                            pos,
+                        groups.push({
                             d,
+                            idx,
+                            level,
+                            pos,
+                            sw,
+                            sh,
                             weight,
+                            cols,
+                            gx,
+                            gy,
+                            blockW,
+                            blockH,
                         });
-                        cx += blockW + GAP;
-                        half = Math.max(half, blockH / 2);
                     });
-                    layout._w = cx || 1;
-                    layout._h = half * 2 || 1;
+                    const n = groups.length;
+                    let maxDim = 1;
+                    groups.forEach(
+                        (g) =>
+                            (maxDim = Math.max(maxDim, g.blockW, g.blockH)),
+                    );
+                    if (effMode() === "row") {
+                        // เรียงแถวเดียว center line (เหมือนนอกเต็มจอ)
+                        let cx = 0,
+                            half = 0;
+                        const GAP = sizeW(base, len - 1) * 0.12;
+                        groups.forEach((g) => {
+                            const oy = -g.blockH / 2;
+                            for (let k = 0; k < g.d; k++) {
+                                const r = Math.floor(k / g.cols),
+                                    c = k % g.cols;
+                                packs.push({
+                                    x: cx + c * (g.sw + g.gx),
+                                    y: oy + r * (g.sh + g.gy),
+                                    level: g.level,
+                                    sw: g.sw,
+                                    sh: g.sh,
+                                });
+                            }
+                            blocks.push({
+                                x: cx,
+                                y: oy,
+                                w: g.blockW,
+                                h: g.blockH,
+                                pos: g.pos,
+                                d: g.d,
+                                weight: g.weight,
+                                di: g.idx,
+                                cx: cx + g.blockW / 2,
+                                cy: 0,
+                            });
+                            cx += g.blockW + GAP;
+                            half = Math.max(half, g.blockH / 2);
+                        });
+                        layout._w = cx || 1;
+                        layout._h = half * 2 || 1;
+                    } else {
+                        // กระจายในอวกาศ — x ตามลำดับหลัก (เส้นไม่ตัดกัน) + สุ่ม y
+                        const pitchX = maxDim * 1.9,
+                            yAmp = maxDim * 1.5;
+                        const rand = (k) => {
+                            const v =
+                                Math.sin(k * 127.1 + 311.7) * 43758.5453;
+                            return v - Math.floor(v);
+                        };
+                        let minX = Infinity,
+                            minY = Infinity,
+                            maxX = -Infinity,
+                            maxY = -Infinity;
+                        groups.forEach((g, i) => {
+                            g._cx = i * pitchX;
+                            g._cy = n > 1 ? (rand(i + 1) - 0.5) * 2 * yAmp : 0;
+                            minX = Math.min(minX, g._cx - g.blockW / 2);
+                            maxX = Math.max(maxX, g._cx + g.blockW / 2);
+                            minY = Math.min(minY, g._cy - g.blockH / 2);
+                            maxY = Math.max(maxY, g._cy + g.blockH / 2);
+                        });
+                        groups.forEach((g) => {
+                            const ccx = g._cx - minX,
+                                ccy = g._cy - minY;
+                            const ox = ccx - g.blockW / 2,
+                                oy = ccy - g.blockH / 2;
+                            for (let k = 0; k < g.d; k++) {
+                                const r = Math.floor(k / g.cols),
+                                    c = k % g.cols;
+                                packs.push({
+                                    x: ox + c * (g.sw + g.gx),
+                                    y: oy + r * (g.sh + g.gy),
+                                    level: g.level,
+                                    sw: g.sw,
+                                    sh: g.sh,
+                                });
+                            }
+                            blocks.push({
+                                x: ox,
+                                y: oy,
+                                w: g.blockW,
+                                h: g.blockH,
+                                pos: g.pos,
+                                d: g.d,
+                                weight: g.weight,
+                                di: g.idx,
+                                cx: ccx,
+                                cy: ccy,
+                            });
+                        });
+                        layout._w = maxX - minX || 1;
+                        layout._h = maxY - minY || 1;
+                    }
+                    // สีประจำกลุ่ม (คิดครั้งเดียวตอน layout ไม่ใช่ทุกเฟรม)
+                    blocks.forEach((b, i) => {
+                        b._color = `hsl(${Math.round(
+                            (i * 360) / Math.max(1, blocks.length),
+                        )}, 75%, 62%)`;
+                    });
+                    layout._digs = digs;
+                    layout._len = len;
                     // chip คลิกได้ → โฟกัสหลักนั้น
                     read.querySelectorAll(".dchip[data-pos]").forEach((ch) => {
                         ch.onclick = () => {
@@ -1022,12 +1274,19 @@
                     });
                     link.innerHTML = s;
                 }
+                function viewPad() {
+                    // เผื่อที่ด้านบนให้แถวเลข + label เวลาเต็มจอ
+                    const fs = !!document.fullscreenElement;
+                    const topPad = fs ? 120 : 30;
+                    return { topPad, availH: Math.max(40, H - topPad - 20) };
+                }
                 function fit() {
                     const ww = layout._w || 1,
                         wh = layout._h || 1;
-                    scale = Math.min(W / (ww * 1.06), (H - 40) / (wh * 1.1));
+                    const { topPad, availH } = viewPad();
+                    scale = Math.min(W / (ww * 1.08), availH / (wh * 1.04));
                     panX = (W - ww * scale) / 2;
-                    panY = H / 2; // center line อยู่กลางจอ
+                    panY = topPad + (availH - wh * scale) / 2;
                     draw();
                 }
                 function fillCircle(x, y, w, h) {
@@ -1056,10 +1315,9 @@
                         sy = wy * scale + panY;
                     if (sx + ssw < 0 || sy + ssh < 0 || sx > W || sy > H)
                         return; // cull offscreen
-                    if (Math.min(ssw, ssh) < DOTMIN || level === 0) {
-                        // เล็กมาก → จุดวงกลม
-                        ctx.fillStyle = LEAF;
-                        fillCircle(sx, sy, Math.max(1, ssw), Math.max(1, ssh));
+                    if (Math.min(ssw, ssh) < _dm || level === 0) {
+                        // เล็กมาก → เก็บไว้ batch fill ทีเดียว
+                        _leaf.push(sx, sy, ssw < 1 ? 1 : ssw, ssh < 1 ? 1 : ssh);
                         return;
                     }
                     const cols = grid(base, level).c,
@@ -1079,8 +1337,8 @@
                         );
                     }
                     const m = Math.min(ssw, ssh);
-                    if (m > 4) {
-                        // ขอบมุมโค้ง หนาตามชั้น → แยกชั้นชัด
+                    if (m > 4 && !interacting) {
+                        // ขอบมุมโค้ง หนาตามชั้น → แยกชั้นชัด (ข้ามตอนขยับ)
                         ctx.strokeStyle = BORDERS[level % BORDERS.length];
                         ctx.lineWidth = Math.max(
                             0.6,
@@ -1098,6 +1356,9 @@
                 }
                 function draw() {
                     ctx.clearRect(0, 0, W, H);
+                    _leaf.length = 0;
+                    // ตอนขยับ ยุบจุดหยาบขึ้น + ข้ามขอบ → ลื่น; หยุดแล้ววาดคม
+                    _dm = interacting ? dotMin * 2 : dotMin;
                     packs.forEach((p) => {
                         const ssw = p.sw * scale,
                             ssh = p.sh * scale,
@@ -1109,7 +1370,7 @@
                                 sx > W ||
                                 sy > H
                             ),
-                            big2 = Math.min(ssw, ssh) >= DOTMIN && p.level > 0,
+                            big2 = Math.min(ssw, ssh) >= _dm && p.level > 0,
                             rr = Math.min(ssw, ssh) * 0.16;
                         if (onscr && big2) {
                             ctx.fillStyle = "rgba(88,166,255,.08)";
@@ -1127,25 +1388,186 @@
                             ctx.stroke();
                         }
                     });
-                    // label หลัก กำกับด้านบน (screen space, อยู่ตลอด)
+                    // batch fill leaf-dot ทั้งหมดใน path เดียว → เร็วกว่าวาดทีละจุดมาก
+                    if (_leaf.length) {
+                        ctx.fillStyle = LEAF;
+                        ctx.beginPath();
+                        for (let i = 0; i < _leaf.length; i += 4) {
+                            const w = _leaf[i + 2],
+                                h = _leaf[i + 3],
+                                cx = _leaf[i] + w / 2,
+                                cy = _leaf[i + 1] + h / 2,
+                                rx = w < 1 ? 0.5 : w / 2,
+                                ry = h < 1 ? 0.5 : h / 2;
+                            ctx.moveTo(cx + rx, cy);
+                            ctx.ellipse(cx, cy, rx, ry, 0, 0, 6.2832);
+                        }
+                        ctx.fill();
+                    }
+                    const fs = !!document.fullscreenElement;
+                    // map di → สี (เฉพาะเต็มจอ ที่ต้องวาดเลข/เส้น)
+                    const colorByDi = {};
+                    if (fs) blocks.forEach((b) => (colorByDi[b.di] = b._color));
+                    // แถวเลขแต่ละหลัก ตัวใหญ่ สีตามกลุ่ม (เฉพาะเต็มจอ)
+                    const digCenter = [];
+                    if (fs) {
+                        const digs = layout._digs || [];
+                        const rowY = 16;
+                        ctx.textBaseline = "top";
+                        ctx.textAlign = "left";
+                        ctx.font = "bold 38px monospace";
+                        const sepTxt = base > 16 ? " : " : "  ";
+                        const dStrs = digs.map(digLabel);
+                        const dW = dStrs.map((s) => ctx.measureText(s).width);
+                        const sepW = ctx.measureText(sepTxt).width;
+                        let total = 0;
+                        dW.forEach(
+                            (w, i) => (total += w + (i > 0 ? sepW : 0)),
+                        );
+                        let x = Math.max(12, (W - total) / 2);
+                        dStrs.forEach((s, i) => {
+                            if (i > 0) x += sepW;
+                            ctx.fillStyle = colorByDi[i] || "#6b7685";
+                            ctx.fillText(s, x, rowY);
+                            digCenter[i] = x + dW[i] / 2;
+                            x += dW[i];
+                        });
+                    }
+                    const labY = fs ? 80 : 6;
+                    // เส้นปะบาง: เลขหลัก → ก้อนจริงของหลักนั้น (ตามตำแหน่ง zoom/pan)
+                    if (fs) {
+                        ctx.save();
+                        ctx.lineCap = "round";
+                        blocks.forEach((b) => {
+                            const dc = digCenter[b.di];
+                            if (dc == null) return;
+                            const sx = b.x * scale + panX,
+                                sy = b.y * scale + panY,
+                                sw = b.w * scale,
+                                sh = b.h * scale;
+                            // กรอบสีรอบกลุ่ม → กลุ่มมีสีเดียวกับเลข
+                            ctx.setLineDash([]);
+                            ctx.strokeStyle = b._color;
+                            ctx.lineWidth = 2;
+                            roundRect(
+                                sx - 4,
+                                sy - 4,
+                                sw + 8,
+                                sh + 8,
+                                Math.min(sw, sh) * 0.12 + 4,
+                            );
+                            ctx.stroke();
+                            // เส้นปะ เลข → ขอบบนกลุ่ม (จาง ใสๆ)
+                            ctx.setLineDash([7, 6]);
+                            ctx.lineWidth = 1.5;
+                            ctx.globalAlpha = 0.28;
+                            ctx.beginPath();
+                            ctx.moveTo(dc, 60);
+                            ctx.lineTo(sx + sw / 2, sy - 4);
+                            ctx.stroke();
+                            ctx.globalAlpha = 1;
+                        });
+                        ctx.restore();
+                    }
+                    // label หลัก = ปุ่ม navigate (กดง่าย, กดได้เสมอ)
                     ctx.font = "12px monospace";
                     ctx.textAlign = "center";
                     ctx.textBaseline = "top";
-                    blocks.forEach((b) => {
-                        let cxs = (b.x + b.w / 2) * scale + panX;
-                        cxs = Math.max(40, Math.min(W - 40, cxs)); // ดึงให้อยู่ในจอเสมอ
-                        ctx.fillStyle = "#58a6ff";
-                        ctx.fillText(`▸ หลัก ${b.pos}`, cxs, 6);
+                    const LBLW = 124,
+                        LGAP = 8,
+                        halfW = LBLW / 2,
+                        labH = 32;
+                    // วิ่งตามตำแหน่งกลุ่ม แต่ declutter 2 ทาง → อยู่ในจอเสมอ กดได้
+                    const anchored = () => {
+                        const R = W - halfW - 4,
+                            L = halfW + 4;
+                        const labs = blocks.map((b) => ({
+                            b,
+                            cx: Math.max(
+                                L,
+                                Math.min(R, (b.x + b.w / 2) * scale + panX),
+                            ),
+                        }));
+                        labs.sort((a, z) => a.cx - z.cx);
+                        // ดันขวาให้ห่างพอ
+                        for (let i = 1; i < labs.length; i++)
+                            labs[i].cx = Math.max(
+                                labs[i].cx,
+                                labs[i - 1].cx + LBLW + LGAP,
+                            );
+                        // ถ้าล้นขวา ดันกลับซ้าย (ไม่ให้หลุดขอบ)
+                        if (labs.length && labs[labs.length - 1].cx > R) {
+                            labs[labs.length - 1].cx = R;
+                            for (let i = labs.length - 2; i >= 0; i--)
+                                labs[i].cx = Math.min(
+                                    labs[i].cx,
+                                    labs[i + 1].cx - (LBLW + LGAP),
+                                );
+                        }
+                        return labs.map((l) => ({
+                            b: l.b,
+                            cx: l.cx,
+                            top: labY - 2,
+                        }));
+                    };
+                    const needed =
+                        blocks.length * LBLW +
+                        Math.max(0, blocks.length - 1) * LGAP;
+                    let placed;
+                    if (fs && needed > W - 8) {
+                        // หลักเยอะเกินแถวเดียว → wrap จัดกึ่งกลาง กันหาย
+                        const perRow = Math.max(
+                            1,
+                            Math.floor((W - 8) / (LBLW + LGAP)),
+                        );
+                        placed = blocks.map((b, i) => {
+                            const row = Math.floor(i / perRow),
+                                colIdx = i % perRow,
+                                inRow = Math.min(
+                                    perRow,
+                                    blocks.length - row * perRow,
+                                ),
+                                rowW = inRow * LBLW + (inRow - 1) * LGAP;
+                            return {
+                                b,
+                                cx:
+                                    (W - rowW) / 2 +
+                                    colIdx * (LBLW + LGAP) +
+                                    halfW,
+                                top: labY + row * (labH + 6),
+                            };
+                        });
+                    } else {
+                        placed = anchored();
+                    }
+                    placed.forEach(({ b, cx, top }) => {
+                        if (fs) {
+                            // กล่องพื้นหลัง → เป้ากดชัด, ขอบสีตามกลุ่ม
+                            ctx.fillStyle = "rgba(28,36,48,.88)";
+                            roundRect(cx - halfW, top, LBLW, labH, 7);
+                            ctx.fill();
+                            ctx.strokeStyle = b._color;
+                            ctx.lineWidth = 1.5;
+                            roundRect(cx - halfW, top, LBLW, labH, 7);
+                            ctx.stroke();
+                        }
+                        ctx.fillStyle = fs ? b._color : "#58a6ff";
+                        ctx.fillText(`▸ หลัก ${b.pos}`, cx, top + 2);
                         ctx.fillStyle = "#9aa7b4";
-                        ctx.fillText(`${b.d} ก้อน ×${b.weight}`, cxs, 20);
-                        b._hit = { x: cxs - 58, y: 4, w: 116, h: 30 }; // กรอบคลิก label
+                        ctx.fillText(`${b.d} ก้อน ×${b.weight}`, cx, top + 16);
+                        b._hit = { x: cx - halfW, y: top, w: LBLW, h: labH };
                     });
                 }
                 function resize() {
-                    const fs = document.fullscreenElement === cv;
+                    const fs = !!document.fullscreenElement;
                     const r = cv.getBoundingClientRect();
                     W = cv.width = r.width;
                     H = cv.height = fs ? window.innerHeight : 360;
+                    // จอใหญ่ → ยุบจุดเร็วขึ้น คุมจำนวนจุดบนจอไม่ให้บานตามพื้นที่
+                    dotMin = fs ? 4.8 : DOTMIN;
+                }
+                function syncBaseLab() {
+                    if (barBase) barBase.value = base;
                 }
                 function setVal(src) {
                     // เปลี่ยนเลข แต่คงมุมมอง/zoom เดิมไว้
@@ -1155,8 +1577,29 @@
                     );
                     num.value = v;
                     rng.value = v;
+                    focusIdx = -1;
+                    if (barRange) barRange.value = v;
                     layout(v);
                     draw();
+                }
+                // วาดแบบ throttle ด้วย rAF → ลาก/ซูมไม่ redraw ถี่เกิน (ลดแลค)
+                let drawQueued = false;
+                function requestDraw() {
+                    if (drawQueued) return;
+                    drawQueued = true;
+                    requestAnimationFrame(() => {
+                        drawQueued = false;
+                        draw();
+                    });
+                }
+                // ขยับอยู่ → วาดหยาบ; หยุดนิ่ง ~160ms → วาดละเอียดคมอีกครั้ง
+                function markInteract() {
+                    interacting = true;
+                    clearTimeout(idleTimer);
+                    idleTimer = setTimeout(() => {
+                        interacting = false;
+                        draw();
+                    }, 160);
                 }
                 // zoom toward point (clamp กัน scale ระเบิด → วาดเพี้ยน)
                 const SMIN = 1e-4,
@@ -1169,7 +1612,7 @@
                     scale = ns;
                     panX = cx - wx * scale;
                     panY = cy - wy * scale;
-                    draw();
+                    requestDraw();
                 }
                 function animateTo(ts, tx, ty) {
                     const s0 = scale,
@@ -1177,6 +1620,7 @@
                         y0 = panY,
                         t0 = performance.now(),
                         dur = 380;
+                    interacting = true; // หยาบระหว่างเคลื่อน
                     (function step(now) {
                         let k = Math.min(1, (now - t0) / dur);
                         k =
@@ -1186,29 +1630,36 @@
                         scale = s0 + (ts - s0) * k;
                         panX = x0 + (tx - x0) * k;
                         panY = y0 + (ty - y0) * k;
+                        if (k >= 1) interacting = false; // เฟรมสุดท้ายวาดคม
                         draw();
                         if (k < 1) requestAnimationFrame(step);
                     })(performance.now());
                 }
                 function focusBlock(b) {
-                    // zoom ไปดูก้อนของหลักนั้น
+                    // zoom ไปดูกลุ่มของหลักนั้น (กลางจอ ใต้แถวเลข)
+                    const { topPad, availH } = viewPad();
                     const ts = Math.max(
                         SMIN,
                         Math.min(
                             SMAX,
                             Math.min(
-                                W / (b.w * 1.3),
-                                (H - 50) / ((b.h || 1) * 1.3),
+                                W / (b.w * 1.4),
+                                availH / ((b.h || 1) * 1.4),
                             ),
                         ),
                     );
-                    animateTo(ts, W / 2 - (b.x + b.w / 2) * ts, H / 2);
+                    animateTo(
+                        ts,
+                        W / 2 - b.cx * ts,
+                        topPad + availH / 2 - b.cy * ts,
+                    );
                 }
                 let moved = false;
                 cv.addEventListener(
                     "wheel",
                     (e) => {
                         e.preventDefault();
+                        markInteract();
                         const r = cv.getBoundingClientRect();
                         zoomAt(
                             e.clientX - r.left,
@@ -1229,7 +1680,8 @@
                     panY += e.clientY - drag.y;
                     drag = { x: e.clientX, y: e.clientY };
                     moved = true;
-                    draw();
+                    markInteract();
+                    requestDraw();
                 });
                 window.addEventListener("mouseup", () => {
                     if (drag) {
@@ -1277,21 +1729,90 @@
                     }
                     cv.style.cursor = on ? "pointer" : "grab";
                 });
+                function toggleFull() {
+                    if (document.fullscreenElement) document.exitFullscreen();
+                    else (stage || cv).requestFullscreen();
+                }
                 document.querySelectorAll(ctrlSel + " .zbtn").forEach((b) => {
                     b.onclick = () => {
-                        if (b.dataset.act === "full") {
-                            if (document.fullscreenElement === cv)
-                                document.exitFullscreen();
-                            else cv.requestFullscreen();
-                        } else fit();
+                        if (b.dataset.act === "full") toggleFull();
+                        else fit();
                     };
                 });
-                cv.addEventListener("fullscreenchange", () => {
+                if (stage) {
+                    // ± stepper (ก้าวละ = ค่าที่พิมพ์เอง)
+                    stage.querySelectorAll("[data-dir]").forEach((b) => {
+                        b.onclick = () => {
+                            const step = Math.max(
+                                1,
+                                parseInt(barStep && barStep.value) || 1,
+                            );
+                            num.value =
+                                (parseInt(num.value) || 0) +
+                                parseInt(b.dataset.dir) * step;
+                            setVal(num);
+                        };
+                    });
+                    // value slider
+                    if (barRange) barRange.oninput = () => setVal(barRange);
+                    // base dropdown (เลือกฐาน)
+                    if (barBase) {
+                        barBase.innerHTML = [...sel.options]
+                            .map(
+                                (o) =>
+                                    `<option value="${o.value}">${o.value}</option>`,
+                            )
+                            .join("");
+                        barBase.value = base;
+                        barBase.onchange = () => {
+                            base = +barBase.value;
+                            sel.value = base;
+                            setVal(num);
+                            fit();
+                        };
+                    }
+                    // โหมดมุมมอง: กระจาย / เรียง
+                    if (barMode) {
+                        const syncMode = () =>
+                            barMode
+                                .querySelectorAll("[data-mode]")
+                                .forEach((p) =>
+                                    p.classList.toggle(
+                                        "on",
+                                        p.dataset.mode === viewMode,
+                                    ),
+                                );
+                        barMode
+                            .querySelectorAll("[data-mode]")
+                            .forEach((p) => {
+                                p.onclick = () => {
+                                    viewMode = p.dataset.mode;
+                                    syncMode();
+                                    setVal(num); // จัดใหม่ตามโหมด
+                                    fit();
+                                };
+                            });
+                        syncMode();
+                    }
+                    // exit + reset view
+                    stage.querySelectorAll('[data-act="exit"]').forEach((b) => {
+                        b.onclick = () => {
+                            if (document.fullscreenElement)
+                                document.exitFullscreen();
+                        };
+                    });
+                    stage
+                        .querySelectorAll('[data-act="reset"]')
+                        .forEach((b) => (b.onclick = fit));
+                }
+                document.addEventListener("fullscreenchange", () => {
                     resize();
+                    setVal(num); // โหมดต่างกันใน/นอกเต็มจอ → จัดใหม่
                     fit();
                 });
                 sel.onchange = () => {
                     base = +sel.value;
+                    syncBaseLab();
                     setVal(num);
                     fit();
                 }; // เปลี่ยนฐาน → จัดใหม่ + fit
