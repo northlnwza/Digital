@@ -979,7 +979,7 @@
             (function () {
                 const row = document.getElementById("symrow");
                 for (let i = 0; i <= 9; i++) {
-                    const stars = i === 0 ? "∅" : "*".repeat(i);
+                    const stars = i === 0 ? "" : "*".repeat(i);
                     const c = document.createElement("div");
                     c.className = "symcell";
                     c.title = i === 0 ? "ไม่มี" : i + " = " + stars;
