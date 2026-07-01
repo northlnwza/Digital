@@ -993,6 +993,9 @@
                 PADF = 0.5; // gap/pad ภายในก้อน (หน่วย dot)
             const DOTMIN = 3.6; // ก้อนเล็กกว่านี้ → วาดเป็นจุดทึบ (สูงขึ้น = ยุบเร็ว ลดแลค)
             const LEAF = "#3fb950";
+            // สีประจำหลัก คงที่ (ไม่เปลี่ยนเมื่อขึ้นหลักใหม่) + หลากสี → golden-angle กระจายสี
+            const placeColor = (pos) =>
+                `hsl(${((pos - 1) * 137.508) % 360}, 68%, 60%)`;
             const BORDERS = [
                 "#3fb950",
                 "#f778ba",
@@ -1136,6 +1139,7 @@
                             gy,
                             blockW,
                             blockH,
+                            color: placeColor(pos),
                         });
                     });
                     const n = groups.length;
@@ -1160,6 +1164,7 @@
                                     level: g.level,
                                     sw: g.sw,
                                     sh: g.sh,
+                                    _color: g.color,
                                 });
                             }
                             blocks.push({
@@ -1173,6 +1178,7 @@
                                 di: g.idx,
                                 cx: cx + g.blockW / 2,
                                 cy: 0,
+                                _color: g.color,
                             });
                             cx += g.blockW + GAP;
                             half = Math.max(half, g.blockH / 2);
@@ -1214,6 +1220,7 @@
                                     level: g.level,
                                     sw: g.sw,
                                     sh: g.sh,
+                                    _color: g.color,
                                 });
                             }
                             blocks.push({
@@ -1227,17 +1234,13 @@
                                 di: g.idx,
                                 cx: ccx,
                                 cy: ccy,
+                                _color: g.color,
                             });
                         });
                         layout._w = maxX - minX || 1;
                         layout._h = maxY - minY || 1;
                     }
-                    // สีประจำกลุ่ม (คิดครั้งเดียวตอน layout ไม่ใช่ทุกเฟรม)
-                    blocks.forEach((b, i) => {
-                        b._color = `hsl(${Math.round(
-                            (i * 360) / Math.max(1, blocks.length),
-                        )}, 75%, 62%)`;
-                    });
+                    // สี b._color ถูกกำหนดตั้งแต่ตอน push (placeColor ตามหลัก) แล้ว
                     layout._digs = digs;
                     layout._len = len;
                     // chip คลิกได้ → โฟกัสหลักนั้น
@@ -1307,6 +1310,8 @@
                     ctx.roundRect(x, y, w, h, r);
                 }
                 function node(wx, wy, level) {
+                    // สีตามระดับ/ขนาดของก้อน (ไม่ใช่ตามหลักบนสุด) → ก้อนขนาดเดียวกันสีเดียวกันเสมอ
+                    const nc = placeColor(level + 1);
                     const sw = sizeW(base, level),
                         sh = sizeH(base, level),
                         ssw = sw * scale,
@@ -1317,7 +1322,13 @@
                         return; // cull offscreen
                     if (Math.min(ssw, ssh) < _dm || level === 0) {
                         // เล็กมาก → เก็บไว้ batch fill ทีเดียว
-                        _leaf.push(sx, sy, ssw < 1 ? 1 : ssw, ssh < 1 ? 1 : ssh);
+                        _leaf.push(
+                            sx,
+                            sy,
+                            ssw < 1 ? 1 : ssw,
+                            ssh < 1 ? 1 : ssh,
+                            nc,
+                        );
                         return;
                     }
                     const cols = grid(base, level).c,
@@ -1338,8 +1349,8 @@
                     }
                     const m = Math.min(ssw, ssh);
                     if (m > 4 && !interacting) {
-                        // ขอบมุมโค้ง หนาตามชั้น → แยกชั้นชัด (ข้ามตอนขยับ)
-                        ctx.strokeStyle = BORDERS[level % BORDERS.length];
+                        // ขอบมุมโค้ง สีตามระดับก้อน (คงที่ทุกที่ที่ก้อนขนาดนี้โผล่)
+                        ctx.strokeStyle = nc;
                         ctx.lineWidth = Math.max(
                             0.6,
                             Math.min(m * 0.04, 1 + level * 1.2),
@@ -1379,7 +1390,7 @@
                         }
                         node(p.x, p.y, p.level);
                         if (onscr && big2) {
-                            ctx.strokeStyle = "#58a6ff";
+                            ctx.strokeStyle = p._color;
                             ctx.lineWidth = Math.max(
                                 1.5,
                                 Math.min(ssw, ssh) * 0.015,
@@ -1388,21 +1399,34 @@
                             ctx.stroke();
                         }
                     });
-                    // batch fill leaf-dot ทั้งหมดใน path เดียว → เร็วกว่าวาดทีละจุดมาก
+                    // batch fill leaf-dot แยกตามสี → path เดียวต่อสี เร็วและได้หลากสี
                     if (_leaf.length) {
-                        ctx.fillStyle = LEAF;
-                        ctx.beginPath();
-                        for (let i = 0; i < _leaf.length; i += 4) {
-                            const w = _leaf[i + 2],
-                                h = _leaf[i + 3],
-                                cx = _leaf[i] + w / 2,
-                                cy = _leaf[i + 1] + h / 2,
-                                rx = w < 1 ? 0.5 : w / 2,
-                                ry = h < 1 ? 0.5 : h / 2;
-                            ctx.moveTo(cx + rx, cy);
-                            ctx.ellipse(cx, cy, rx, ry, 0, 0, 6.2832);
+                        const buckets = {};
+                        for (let i = 0; i < _leaf.length; i += 5) {
+                            const col = _leaf[i + 4] || LEAF;
+                            (buckets[col] || (buckets[col] = [])).push(
+                                _leaf[i],
+                                _leaf[i + 1],
+                                _leaf[i + 2],
+                                _leaf[i + 3],
+                            );
                         }
-                        ctx.fill();
+                        for (const col in buckets) {
+                            const arr = buckets[col];
+                            ctx.fillStyle = col;
+                            ctx.beginPath();
+                            for (let i = 0; i < arr.length; i += 4) {
+                                const w = arr[i + 2],
+                                    h = arr[i + 3],
+                                    cx = arr[i] + w / 2,
+                                    cy = arr[i + 1] + h / 2,
+                                    rx = w < 1 ? 0.5 : w / 2,
+                                    ry = h < 1 ? 0.5 : h / 2;
+                                ctx.moveTo(cx + rx, cy);
+                                ctx.ellipse(cx, cy, rx, ry, 0, 0, 6.2832);
+                            }
+                            ctx.fill();
+                        }
                     }
                     const fs = !!document.fullscreenElement;
                     // map di → สี (เฉพาะเต็มจอ ที่ต้องวาดเลข/เส้น)
@@ -1445,18 +1469,6 @@
                                 sy = b.y * scale + panY,
                                 sw = b.w * scale,
                                 sh = b.h * scale;
-                            // กรอบสีรอบกลุ่ม → กลุ่มมีสีเดียวกับเลข
-                            ctx.setLineDash([]);
-                            ctx.strokeStyle = b._color;
-                            ctx.lineWidth = 2;
-                            roundRect(
-                                sx - 4,
-                                sy - 4,
-                                sw + 8,
-                                sh + 8,
-                                Math.min(sw, sh) * 0.12 + 4,
-                            );
-                            ctx.stroke();
                             // เส้นปะ เลข → ขอบบนกลุ่ม (จาง ใสๆ)
                             ctx.setLineDash([7, 6]);
                             ctx.lineWidth = 1.5;
